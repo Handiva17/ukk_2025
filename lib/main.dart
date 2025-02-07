@@ -13,7 +13,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Kasir Warteg';
+  static const String _title = 'Kasir Handiva';
 
   @override
   Widget build(BuildContext context) {
