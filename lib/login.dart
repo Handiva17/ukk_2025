@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kasir/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -10,12 +9,12 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-  class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>(); // Key untuk form validation
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // Untuk mengontrol visibilitas password
-  bool _isLoading = false; // Untuk mengontrol loading state
+  bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   final SupabaseClient supabase = Supabase.instance.client;
 
@@ -32,7 +31,6 @@ class LoginScreen extends StatefulWidget {
     final String password = passwordController.text.trim();
 
     try {
-      // Query ke Supabase
       final response = await supabase
           .from('user')
           .select('username')
@@ -41,20 +39,12 @@ class LoginScreen extends StatefulWidget {
           .maybeSingle();
 
       if (response != null) {
-        // Simpan data user ke SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('username', response['username']);
-        
-
-        // Login berhasil, arahkan ke HomeScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => RegistrasiPage()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
-
-        
       } else {
-        _showError('Username atau password salah, harap isi dengan benar.');
+        _showError('Username atau password salah.');
       }
     } catch (e) {
       _showError('Terjadi kesalahan: $e');
@@ -65,13 +55,9 @@ class LoginScreen extends StatefulWidget {
     }
   }
 
-
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
@@ -84,22 +70,12 @@ class LoginScreen extends StatefulWidget {
             padding: const EdgeInsets.all(20),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 400,
-                ),
+                constraints: const BoxConstraints(maxWidth: 400),
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    // boxShadow: [
-                    //   BoxShadow(
-                    //     color: Colors.grey.withOpacity(0.3),
-                    //     spreadRadius: 5,
-                    //     blurRadius: 7,
-                    //     offset: const Offset(0, 3),
-                    //   ),
-                    // ],
                   ),
                   child: Form(
                     key: _formKey,
@@ -109,7 +85,7 @@ class LoginScreen extends StatefulWidget {
                         const Text(
                           'Login',
                           style: TextStyle(
-                            color: Color.fromARGB(255, 42, 146, 231),
+                            color: Color(0xffFEA82F),
                             fontWeight: FontWeight.bold,
                             fontSize: 32,
                           ),
@@ -124,12 +100,8 @@ class LoginScreen extends StatefulWidget {
                             labelText: 'User Name',
                             prefixIcon: const Icon(Icons.person),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Username tidak boleh kosong';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              value == null || value.isEmpty ? 'Username tidak boleh kosong' : null,
                         ),
                         const SizedBox(height: 15),
                         TextFormField(
@@ -154,28 +126,22 @@ class LoginScreen extends StatefulWidget {
                               },
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password tidak boleh kosong';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              value == null || value.isEmpty ? 'Password tidak boleh kosong' : null,
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 34, 103, 207), 
-                            padding: const EdgeInsets.symmetric(vertical: 15), 
+                            backgroundColor: const Color(0xffFF6701),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                             minimumSize: const Size(double.infinity, 50),
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
+                              ? const CircularProgressIndicator(color: Colors.white)
                               : const Text(
                                   'Login',
                                   style: TextStyle(fontSize: 16, color: Colors.white),
@@ -190,7 +156,7 @@ class LoginScreen extends StatefulWidget {
           ),
         ),
       ),
-      backgroundColor: const Color(0xffEAEAEA),
+      backgroundColor: const Color(0xffFCECDD),
     );
   }
 }
