@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'produk.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,16 +17,49 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const UserPage(),
     const ProdukPage(),
-    
     Center(child: Text('Produk Page')),
   ];
+
+  void _logoutConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Konfirmasi Logout'),
+        content: Text('Apakah Anda yakin ingin logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+            child: Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kasir'),titleTextStyle: TextStyle(color: Colors.white, fontSize: 18,),
+        title: const Text(
+          'Kasir',
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
         backgroundColor: Color(0xffEC8305),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.white),
+            onPressed: _logoutConfirmation,
+          ),
+        ],
       ),
       body: PageView(
         controller: _pageController,

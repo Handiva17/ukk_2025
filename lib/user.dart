@@ -33,7 +33,14 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> _addUser(String username, String password) async {
     try {
-      await _supabase.from('user').insert({'username': username, 'password': password});
+      final existingUser = _users.any((user) => user['username'] == username);
+      if (existingUser) {
+        _showError('Username sudah ada, silakan gunakan username lain.');
+        return;
+      }
+      await _supabase
+          .from('user')
+          .insert({'username': username, 'password': password});
       _fetchUsers();
     } catch (error) {
       debugPrint('Error adding user: $error');
@@ -42,7 +49,15 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> _editUser(int id, String username, String password) async {
     try {
-      await _supabase.from('user').update({'username': username, 'password': password}).eq('id', id);
+      final existingUser = _users
+          .any((user) => user['username'] == username && user['id'] != id);
+      if (existingUser) {
+        _showError('Username sudah digunakan oleh user lain.');
+        return;
+      }
+      await _supabase
+          .from('user')
+          .update({'username': username, 'password': password}).eq('id', id);
       _fetchUsers();
     } catch (error) {
       debugPrint('Error editing user: $error');
@@ -59,7 +74,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   void _showDeleteConfirmation(int id) {
-     showDialog(
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Konfirmasi Penghapusan'),
@@ -86,11 +101,17 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
-  
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 
   void _showUserDialog({Map<String, dynamic>? user}) {
-    final TextEditingController usernameController = TextEditingController(text: user?['username'] ?? '');
-    final TextEditingController passwordController = TextEditingController(text: user?['password'] ?? '');
+    final TextEditingController usernameController =
+        TextEditingController(text: user?['username'] ?? '');
+    final TextEditingController passwordController =
+        TextEditingController(text: user?['password'] ?? '');
     final _formKey = GlobalKey<FormState>();
     bool obscureText = true;
 
@@ -109,7 +130,8 @@ class _UserPageState extends State<UserPage> {
                     TextFormField(
                       controller: usernameController,
                       decoration: const InputDecoration(labelText: 'Username'),
-                      validator: (value) => value!.isEmpty ? 'Username tidak boleh kosong' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Username tidak boleh kosong' : null,
                     ),
                     TextFormField(
                       controller: passwordController,
@@ -117,11 +139,15 @@ class _UserPageState extends State<UserPage> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         suffixIcon: IconButton(
-                          icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
-                          onPressed: () => setState(() => obscureText = !obscureText),
+                          icon: Icon(obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () =>
+                              setState(() => obscureText = !obscureText),
                         ),
                       ),
-                      validator: (value) => value!.isEmpty ? 'Password tidak boleh kosong' : null,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Password tidak boleh kosong' : null,
                     ),
                   ],
                 ),
@@ -130,21 +156,27 @@ class _UserPageState extends State<UserPage> {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Batal'),
-                  style: TextButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white),
                 ),
                 TextButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       if (user == null) {
-                        _addUser(usernameController.text, passwordController.text);
+                        _addUser(
+                            usernameController.text, passwordController.text);
                       } else {
-                        _editUser(user['id'], usernameController.text, passwordController.text);
+                        _editUser(user['id'], usernameController.text,
+                            passwordController.text);
                       }
                       Navigator.of(context).pop();
                     }
                   },
                   child: Text(user == null ? 'Tambah' : 'Simpan'),
-                  style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white),
                 ),
               ],
             );
@@ -160,26 +192,46 @@ class _UserPageState extends State<UserPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
+              padding: const EdgeInsets.all(10),
               itemCount: _users.length,
               itemBuilder: (context, index) {
                 final user = _users[index];
-                return ListTile(
-                  title: Text(user['username']),
-                  titleTextStyle: TextStyle(
-                    fontSize: 20.0,
+                return Card(
+                  elevation: 4,
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Color(0xff16C47F)),
-                        onPressed: () => _showUserDialog(user: user),
+                  child: ListTile(
+                    title: Text(
+                      user['username'],
+                      style: const TextStyle(
+                        fontSize: 20.0,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Color(0xffF93827)),
-                        onPressed: () => _showDeleteConfirmation(user['id']),
+                    ),
+                    subtitle: Text(
+                      user['password'],
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey,
                       ),
-                    ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon:
+                              const Icon(Icons.edit, color: Color(0xff16C47F)),
+                          onPressed: () => _showUserDialog(user: user),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete,
+                              color: Color(0xffF93827)),
+                          onPressed: () => _showDeleteConfirmation(user['id']),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -187,9 +239,9 @@ class _UserPageState extends State<UserPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showUserDialog(),
         child: const Icon(Icons.add, color: Colors.white),
-        backgroundColor: Color(0xff16C47F),
+        backgroundColor: const Color(0xff16C47F),
       ),
-      backgroundColor: Color(0xffEDF4C2),
+      backgroundColor: const Color(0xffEDF4C2),
     );
   }
 }
