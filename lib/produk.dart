@@ -221,11 +221,11 @@ class _ProdukPageState extends State<ProdukPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  icon: const Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit, color: Color(0xff16C47F)),
                                   onPressed: () =>
                                       _addOrUpdateProduct(product: product)),
                               IconButton(
-                                  icon: const Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete, color: Color(0xffF93827)),
                                   onPressed: () =>
                                       _confirmDelete(product['id_produk'])),
                             ],
@@ -239,7 +239,8 @@ class _ProdukPageState extends State<ProdukPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addOrUpdateProduct(),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white,),
+        backgroundColor: Color(0xff16C47F),
       ),
     );
   }

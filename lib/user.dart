@@ -226,8 +226,7 @@ class _UserPageState extends State<UserPage> {
                           onPressed: () => _showUserDialog(user: user),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete,
-                              color: Color(0xffF93827)),
+                          icon: const Icon(Icons.delete, color: Color(0xffF93827)),
                           onPressed: () => _showDeleteConfirmation(user['id']),
                         ),
                       ],
@@ -241,7 +240,6 @@ class _UserPageState extends State<UserPage> {
         child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: const Color(0xff16C47F),
       ),
-      backgroundColor: const Color(0xffEDF4C2),
     );
   }
 }

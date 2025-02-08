@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kasir/pelanggan.dart';
 import 'user.dart';
 import 'produk.dart';
 import 'login.dart';
@@ -17,7 +18,8 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const UserPage(),
     const ProdukPage(),
-    Center(child: Text('Produk Page')),
+    const PelangganPage(),
+    // Center(child: Text('Produk Page')),
   ];
 
   void _logoutConfirmation() {
@@ -85,6 +87,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Produk',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Pelanggan',
           ),
         ],
       ),
