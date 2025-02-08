@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kasir/pelanggan.dart';
+import 'package:kasir/penjualan.dart';
 import 'user.dart';
 import 'produk.dart';
 import 'login.dart';
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     const UserPage(),
     const ProdukPage(),
     const PelangganPage(),
+    PenjualanPage(),
     // Center(child: Text('Produk Page')),
   ];
 
@@ -71,6 +73,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() => _currentIndex = index);
@@ -91,6 +94,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Pelanggan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_shopping_cart),
+            label: 'Penjualan',
           ),
         ],
       ),
