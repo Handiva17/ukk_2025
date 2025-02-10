@@ -36,14 +36,17 @@ class _ProdukPageState extends State<ProdukPage> {
   }
 
   void _filterProducts() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredProducts = _products
-          .where(
-              (product) => product['nama_produk'].toLowerCase().contains(query))
-          .toList();
-    });
-  }
+  String query = _searchController.text.toLowerCase();
+  setState(() {
+    _filteredProducts = _products.where((product) {
+      String namaProduk = product['nama_produk'].toLowerCase();
+      String hargaProduk = product['harga'].toString();
+
+      return namaProduk.contains(query) || hargaProduk.contains(query);
+    }).toList();
+  });
+}
+
 
   Future<void> _addOrUpdateProduct({Map<String, dynamic>? product}) async {
     final _formKey = GlobalKey<FormState>();
@@ -98,7 +101,11 @@ class _ProdukPageState extends State<ProdukPage> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal')),
+                child: const Text('Batal'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),),
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
@@ -142,6 +149,10 @@ class _ProdukPageState extends State<ProdukPage> {
                 }
               },
               child: const Text('Simpan'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              )
             ),
           ],
         );
@@ -168,13 +179,21 @@ class _ProdukPageState extends State<ProdukPage> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal')),
+                child: const Text('Batal'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),),
             TextButton(
               onPressed: () {
                 _deleteProduct(id);
                 Navigator.of(context).pop();
               },
               child: const Text('Hapus'),
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 216, 18, 4),
+                foregroundColor: Colors.white
+              )
             ),
           ],
         );
@@ -242,6 +261,7 @@ class _ProdukPageState extends State<ProdukPage> {
         child: const Icon(Icons.add, color: Colors.white,),
         backgroundColor: Color(0xff16C47F),
       ),
+      backgroundColor: Color(0xffEDF4C2),
     );
   }
 }

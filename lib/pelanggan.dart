@@ -36,14 +36,20 @@ class _PelangganPageState extends State<PelangganPage> {
   }
 
   void _filterPelanggan() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredPelanggan = _pelanggan
-          .where((pelanggan) =>
-              pelanggan['nama_pelanggan'].toLowerCase().contains(query))
-          .toList();
-    });
-  }
+  String query = _searchController.text.toLowerCase();
+  setState(() {
+    _filteredPelanggan = _pelanggan.where((pelanggan) {
+      String namaPelanggan = pelanggan['nama_pelanggan'].toLowerCase();
+      String alamat = pelanggan['alamat'].toLowerCase();
+      String nomorTelepon = pelanggan['nomor_telepon'].toString();
+
+      return namaPelanggan.contains(query) || 
+             alamat.contains(query) || 
+             nomorTelepon.contains(query);
+    }).toList();
+  });
+}
+
 
   Future<void> _addOrUpdatePelanggan({Map<String, dynamic>? pelanggan}) async {
     final _formKey = GlobalKey<FormState>();
@@ -98,7 +104,11 @@ class _PelangganPageState extends State<PelangganPage> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal')),
+                child: const Text('Batal'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),),
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
@@ -138,6 +148,10 @@ class _PelangganPageState extends State<PelangganPage> {
                 }
               },
               child: const Text('Simpan'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         );
@@ -165,13 +179,21 @@ class _PelangganPageState extends State<PelangganPage> {
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal')),
+                child: const Text('Batal'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),),
             TextButton(
               onPressed: () {
                 _deletePelanggan(id);
                 Navigator.of(context).pop();
               },
               child: const Text('Hapus'),
+              style: TextButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 216, 18, 4),
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         );
@@ -239,6 +261,7 @@ class _PelangganPageState extends State<PelangganPage> {
         child: const Icon(Icons.add, color: Colors.white,),
         backgroundColor: Color(0xff16C47F),
       ),
+      backgroundColor: Color(0xffEDF4C2),
     );
   }
 }

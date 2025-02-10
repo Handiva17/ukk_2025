@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kasir/pelanggan.dart';
-import 'package:kasir/penjualan.dart';
+import 'package:kasir/riwayat.dart';
+import 'penjualan.dart';
 import 'user.dart';
 import 'produk.dart';
 import 'login.dart';
@@ -18,9 +19,10 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const UserPage(),
-    const ProdukPage(),
+    const ProdukPage(), 
     const PelangganPage(),
     PenjualanPage(),
+    RiwayatPage(),
     // Center(child: Text('Produk Page')),
   ];
 
@@ -34,6 +36,10 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text('Batal'),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -43,6 +49,10 @@ class _HomePageState extends State<HomePage> {
               );
             },
             child: Text('Logout'),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
           ),
         ],
       ),
@@ -54,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Kasir',
+          'Kasir Warteg',
           style: TextStyle(color: Colors.white, fontSize: 18),
         ),
         backgroundColor: Color(0xffEC8305),
@@ -98,6 +108,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.add_shopping_cart),
             label: 'Penjualan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Riwayat',
           ),
         ],
       ),

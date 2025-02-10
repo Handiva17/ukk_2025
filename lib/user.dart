@@ -95,7 +95,8 @@ class _UserPageState extends State<UserPage> {
             },
             child: const Text('Hapus'),
             style: TextButton.styleFrom(
-                backgroundColor: Colors.red, foregroundColor: Colors.white),
+                backgroundColor: Color.fromARGB(255, 216, 18, 4),
+                foregroundColor: Colors.white),
           ),
         ],
       ),
@@ -210,13 +211,13 @@ class _UserPageState extends State<UserPage> {
                         fontSize: 20.0,
                       ),
                     ),
-                    subtitle: Text(
-                      user['password'],
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey,
-                      ),
-                    ),
+                    // subtitle: Text(
+                    //   user['password'],
+                    //   style: const TextStyle(
+                    //     fontSize: 16.0,
+                    //     color: Colors.grey,
+                    //   ),
+                    // ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -240,6 +241,7 @@ class _UserPageState extends State<UserPage> {
         child: const Icon(Icons.add, color: Colors.white),
         backgroundColor: const Color(0xff16C47F),
       ),
+      backgroundColor: Color(0xffEDF4C2),
     );
   }
 }
