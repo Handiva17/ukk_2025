@@ -95,9 +95,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
       final response = await _supabase.from('penjualan').insert({
         'tanggal_penjualan': DateTime.now().toIso8601String(),
         'total_harga': _totalPrice,
-        'id_pelanggan': _selectedCustomer == 'pelanggan biasa'
-            ? null
-            : int.parse(_selectedCustomer!),
+        'id_pelanggan': int.parse(_selectedCustomer!),
       }).select();
       final penjualanId = response[0]['id_penjualan'];
 
@@ -149,7 +147,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
               onPressed: () => _addToCart(product),
               child: const Text('Tambah'),
               style: TextButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Color(0xff16C47F),
                 foregroundColor: Colors.white,
               ),
             ),
@@ -200,7 +198,7 @@ class _PenjualanPageState extends State<PenjualanPage> {
           onPressed: _checkout,
           child: const Text('Bayar'),
           style: TextButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor: Color(0xff16C47F),
             foregroundColor: Colors.white,
           ),
         ),

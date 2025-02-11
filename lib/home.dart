@@ -18,11 +18,11 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
 
   final List<Widget> _pages = [
-    const UserPage(),
-    const ProdukPage(), 
-    const PelangganPage(),
     PenjualanPage(),
     RiwayatPage(),
+    const ProdukPage(), 
+    const PelangganPage(),
+    const UserPage(),
     // Center(child: Text('Produk Page')),
   ];
 
@@ -63,9 +63,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.food_bank_rounded, size: 40, color: Colors.white,),
         title: const Text(
-          'Kasir Warteg',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          'Warteg Komplit',
+          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Color(0xffEC8305),
         actions: [
@@ -94,8 +95,12 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.app_registration),
-            label: 'User',
+            icon: Icon(Icons.add_shopping_cart),
+            label: 'Penjualan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Riwayat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
@@ -106,12 +111,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Pelanggan',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_shopping_cart),
-            label: 'Penjualan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Riwayat',
+            icon: Icon(Icons.app_registration),
+            label: 'User',
           ),
         ],
       ),

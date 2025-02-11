@@ -36,20 +36,19 @@ class _PelangganPageState extends State<PelangganPage> {
   }
 
   void _filterPelanggan() {
-  String query = _searchController.text.toLowerCase();
-  setState(() {
-    _filteredPelanggan = _pelanggan.where((pelanggan) {
-      String namaPelanggan = pelanggan['nama_pelanggan'].toLowerCase();
-      String alamat = pelanggan['alamat'].toLowerCase();
-      String nomorTelepon = pelanggan['nomor_telepon'].toString();
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredPelanggan = _pelanggan.where((pelanggan) {
+        String namaPelanggan = pelanggan['nama_pelanggan'].toLowerCase();
+        String alamat = pelanggan['alamat'].toLowerCase();
+        String nomorTelepon = pelanggan['nomor_telepon'].toString();
 
-      return namaPelanggan.contains(query) || 
-             alamat.contains(query) || 
-             nomorTelepon.contains(query);
-    }).toList();
-  });
-}
-
+        return namaPelanggan.contains(query) ||
+            alamat.contains(query) ||
+            nomorTelepon.contains(query);
+      }).toList();
+    });
+  }
 
   Future<void> _addOrUpdatePelanggan({Map<String, dynamic>? pelanggan}) async {
     final _formKey = GlobalKey<FormState>();
@@ -94,6 +93,8 @@ class _PelangganPageState extends State<PelangganPage> {
                       return 'Nomor telepon tidak boleh kosong';
                     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nomor telepon hanya boleh berisi angka';
+                    } else if (value.length > 13) {
+                      return 'Nomor tidak bisa lebih dari 13 angka';
                     }
                     return null;
                   },
@@ -103,12 +104,13 @@ class _PelangganPageState extends State<PelangganPage> {
           ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal'),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+            ),
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
@@ -122,10 +124,9 @@ class _PelangganPageState extends State<PelangganPage> {
                       p['nomor_telepon'] == nomorTelepon);
 
                   if (existingData) {
-                    Navigator.of(context)
-                        .pop();
+                    Navigator.of(context).pop();
                     Future.delayed(Duration(milliseconds: 300), () {
-                    _showError('Data pelanggan sudah ada!');
+                      _showError('Data pelanggan sudah ada!');
                     });
                     return;
                   }
@@ -178,12 +179,13 @@ class _PelangganPageState extends State<PelangganPage> {
               const Text('Apakah Anda yakin ingin menghapus pelanggan ini?'),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Batal'),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+            ),
             TextButton(
               onPressed: () {
                 _deletePelanggan(id);
@@ -233,6 +235,10 @@ class _PelangganPageState extends State<PelangganPage> {
                       final pelanggan = _filteredPelanggan[index];
                       return Card(
                         child: ListTile(
+                          leading: Icon(
+                            Icons.people_alt_rounded,
+                            color: Colors.blue,
+                          ),
                           title: Text(pelanggan['nama_pelanggan']),
                           subtitle: Text(
                               '${pelanggan['alamat']}\n${pelanggan['nomor_telepon']}'),
@@ -240,11 +246,13 @@ class _PelangganPageState extends State<PelangganPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                  icon: const Icon(Icons.edit, color: Color(0xff16C47F)),
+                                  icon: const Icon(Icons.edit,
+                                      color: Color(0xff16C47F)),
                                   onPressed: () => _addOrUpdatePelanggan(
                                       pelanggan: pelanggan)),
                               IconButton(
-                                  icon: const Icon(Icons.delete, color: Color(0xffF93827)),
+                                  icon: const Icon(Icons.delete,
+                                      color: Color(0xffF93827)),
                                   onPressed: () => _confirmDelete(
                                       pelanggan['id_pelanggan'])),
                             ],
@@ -258,7 +266,10 @@ class _PelangganPageState extends State<PelangganPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addOrUpdatePelanggan(),
-        child: const Icon(Icons.add, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Color(0xff16C47F),
       ),
       backgroundColor: Color(0xffEDF4C2),

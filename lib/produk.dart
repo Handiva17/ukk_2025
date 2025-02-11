@@ -233,6 +233,7 @@ class _ProdukPageState extends State<ProdukPage> {
                       final product = _filteredProducts[index];
                       return Card(
                         child: ListTile(
+                          leading: Icon(Icons.fastfood, color: Colors.blue,),
                           title: Text(product['nama_produk']),
                           subtitle: Text(
                               'Rp${product['harga']} - Stok: ${product['stok']}'),
