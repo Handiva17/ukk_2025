@@ -47,7 +47,9 @@ class _PenjualanPageState extends State<PenjualanPage> {
     }
   }
 
-  void _addToCart(Map<String, dynamic> product) {
+  void _addToCart(Map<String, dynamic> product) async {
+    if (product['stok'] <= 0) return;
+
     setState(() {
       final index =
           _cart.indexWhere((item) => item['id_produk'] == product['id_produk']);
@@ -56,24 +58,67 @@ class _PenjualanPageState extends State<PenjualanPage> {
       } else {
         _cart.add({...product, 'quantity': 1});
       }
-      _calculateTotal();
     });
+
+    try {
+      final newStock = product['stok'] - 1;
+      await _supabase
+          .from('produk')
+          .update({'stok': newStock}).eq('id_produk', product['id_produk']);
+
+      setState(() {
+        product['stok'] = newStock;
+      });
+    } catch (error) {
+      debugPrint('Error updating stock: $error');
+    }
+
+    _calculateTotal();
   }
 
-  void _updateCart(Map<String, dynamic> product, int quantity) {
-    setState(() {
-      final index =
-          _cart.indexWhere((item) => item['id_produk'] == product['id_produk']);
-      if (index != -1) {
-        if (quantity > 0) {
-          _cart[index]['quantity'] = quantity;
-        } else {
-          _cart.removeAt(index);
+  void _updateCart(Map<String, dynamic> product, int quantity) async {
+  setState(() {
+    final index =
+        _cart.indexWhere((item) => item['id_produk'] == product['id_produk']);
+    if (index != -1) {
+      if (quantity > 0) {
+        // Hitung selisih pengurangan stok
+        int diff = _cart[index]['quantity'] - quantity;
+
+        // Update jumlah produk dalam keranjang
+        _cart[index]['quantity'] = quantity;
+
+        // Tambahkan kembali stok di daftar produk
+        final productIndex = _products.indexWhere(
+            (item) => item['id_produk'] == product['id_produk']);
+        if (productIndex != -1) {
+          _products[productIndex]['stok'] += diff;
+        }
+      } else {
+        // Jika jumlah menjadi 0, hapus dari keranjang dan kembalikan seluruh stok
+        final removedQuantity = _cart[index]['quantity'];
+        _cart.removeAt(index);
+
+        final productIndex = _products.indexWhere(
+            (item) => item['id_produk'] == product['id_produk']);
+        if (productIndex != -1) {
+          _products[productIndex]['stok'] += removedQuantity;
         }
       }
-      _calculateTotal();
-    });
+    }
+    _calculateTotal();
+  });
+
+  try {
+    // Update stok ke database
+    await _supabase.from('produk').update({
+      'stok': product['stok'],
+    }).eq('id_produk', product['id_produk']);
+  } catch (error) {
+    debugPrint('Error updating stock: $error');
   }
+}
+
 
   void _calculateTotal() {
     double total = _cart.fold(
@@ -140,14 +185,24 @@ class _PenjualanPageState extends State<PenjualanPage> {
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: ListTile(
-            title: Text(product['nama_produk'],
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('Harga: Rp ${product['harga']}'),
+            leading: Icon(Icons.fastfood, color: Colors.blue,),
+            title: Text(
+              product['nama_produk'],
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Harga: Rp ${product['harga']}'),
+                Text('Stok: ${product['stok']}'),
+              ],
+            ),
             trailing: ElevatedButton(
-              onPressed: () => _addToCart(product),
+              onPressed: product['stok'] > 0 ? () => _addToCart(product) : null,
               child: const Text('Tambah'),
               style: TextButton.styleFrom(
-                backgroundColor: Color(0xff16C47F),
+                backgroundColor:
+                    product['stok'] > 0 ? Color(0xff16C47F) : Colors.grey,
                 foregroundColor: Colors.white,
               ),
             ),
