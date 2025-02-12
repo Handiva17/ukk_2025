@@ -82,8 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        const Icon(
+                          Icons.food_bank_rounded,
+                          size: 90,
+                          color: Color(0xffFF6701),
+                        ),
+                        const SizedBox(height: 10),
                         const Text(
-                          'Login',
+                          'Warteg Komplit',
                           style: TextStyle(
                             color: Color(0xffFEA82F),
                             fontWeight: FontWeight.bold,

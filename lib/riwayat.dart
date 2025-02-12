@@ -12,6 +12,7 @@ class RiwayatPage extends StatefulWidget {
 
 class _RiwayatPageState extends State<RiwayatPage> {
   final SupabaseClient _supabase = Supabase.instance.client;
+  final NumberFormat currencyFormat = NumberFormat.decimalPattern('id');
   List<Map<String, dynamic>> _transactionHistory = [];
   List<Map<String, dynamic>> _filteredTransactions = [];
   TextEditingController _searchController = TextEditingController();
@@ -99,7 +100,8 @@ class _RiwayatPageState extends State<RiwayatPage> {
               const SizedBox(height: 8),
               Text('Tanggal: $formattedDate'),
               const SizedBox(height: 8),
-              Text('Total: Rp ${transaction['total_harga']}'),
+              Text(
+                  'Total: Rp ${currencyFormat.format(transaction['total_harga'].toInt())}'),
               const SizedBox(height: 8),
               const Text('Detail Produk:',
                   style: TextStyle(fontWeight: FontWeight.bold)),
@@ -108,7 +110,7 @@ class _RiwayatPageState extends State<RiwayatPage> {
                   .map((detail) => ListTile(
                         title: Text(detail['produk']['nama_produk']),
                         subtitle: Text(
-                            'Jumlah: ${detail['jumlah_produk']} | Subtotal: Rp ${detail['subtotal']}'),
+                            'Jumlah: ${detail['jumlah_produk']} | Subtotal: Rp ${currencyFormat.format(detail['subtotal'].toInt())}'),
                       ))
                   .toList(),
             ],
@@ -131,7 +133,7 @@ class _RiwayatPageState extends State<RiwayatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffEFE3C2),
+      backgroundColor: Color(0xffFFF5E4),
       body: Column(
         children: [
           Padding(
@@ -163,11 +165,13 @@ class _RiwayatPageState extends State<RiwayatPage> {
                         margin: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 8),
                         child: ListTile(
-                          leading: Icon(Icons.history_edu, color: Colors.blue),
+                          leading:
+                              Icon(Icons.history_edu, color: Color(0xff5F9DF7)),
                           title: Text(
                               'Transaksi #${_transactionHistory.length - _transactionHistory.indexOf(transaction)}'),
                           subtitle: Text(
-                              'Tanggal: $formattedDate\nTotal: Rp ${transaction['total_harga']}'),
+                            'Tanggal: $formattedDate\nTotal: Rp ${currencyFormat.format(transaction['total_harga'])}',
+                          ),
                           onTap: () =>
                               _showTransactionDetails(context, transaction),
                         ),
